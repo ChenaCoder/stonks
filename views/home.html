@@ -1,0 +1,133 @@
+<head>
+     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+     <div class="area">
+          <center>
+               <h1>Stonks</h1>
+               <p> This is stonk data backtester tester <br> Enter a stonk into the field below.<br>The data will be
+                    displayed.
+               </p>
+               <div class="text">
+                    <table class="table table-striped">
+                         <tr class="bg-info">
+                              <th>Ticker</th>
+                              <th>Close Open Mean</th>
+                              <th>Close Open SD</th>
+                              <th>Close Open 2SD</th>
+                              <th>High Low Range Mean</th>
+                              <th>High Low SD</th>
+                              <th>High Low 2SD</th>
+                         </tr>
+
+                         <tbody id="myTable">
+
+                         </tbody>
+                    </table>
+               </div>
+               <form action="submitFormWithPost" method="POST">
+                    <label>Amount of Records:</label>
+                    <input name="inputField" type="number">
+                    <label for="month">Month (MM):</label>
+                    <select id="month" name="month">
+                         <option value="01">January</option>
+                         <option value="02">February</option>
+                         <option value="03">March</option>
+                         <option value="04">April</option>
+                         <option value="05">May</option>
+                         <option value="06">June</option>
+                         <option value="07">July</option>
+                         <option value="08">August</option>
+                         <option value="09">September</option>
+                         <option value="10">October</option>
+                         <option value="11">November</option>
+                         <option value="12">December</option>
+                    </select>
+
+                    <label for="date">Date (DD):</label>
+                    <select id="date" name="date">
+                    </select>
+                    <label for="column">Column:</label>
+                    <select id="column" name="column">
+                         <option value=""></option>
+                         <option value="avgCloseOpenMean">COMean</option>
+                         <option value="closeOpenStandardDeviation">COSD</option>
+                         <option value="twoSD">CO2SD</option>
+                         <option value="avgHighLowRange">HLRange</option>
+                         <option value="highLowStandardDeviation">HLSD</option>
+                         <option value="twoSDHighLow">HL2SD</option>
+                    </select>
+                    <label for="sort">Sort:</label>
+                    <select id="sort" name="sort">
+                         <option value=""></option>
+                         <option value="1">ascending</option>
+                         <option value="2">descending</option>
+                    </select>
+                    <input name="submit" type="submit">
+               </form>
+
+          </center>
+     </div>
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+     <script>
+          // Assuming your data is a JSON object
+          var dataj = JSON.parse(decodeURI('<%- JSON.stringify(data) %>'));
+
+          buildTable(dataj);
+
+          function buildTable(dataj) {
+               var table = document.getElementById('myTable');
+
+               for (var i = 0; i < dataj.length; i++) {
+                    var row = `<tr>
+                                  <td>${dataj[i].ticker}</td>
+                                  <td>${dataj[i].avgCloseOpenMean}</td>
+                                  <td>${dataj[i].closeOpenStandardDeviation}</td>
+                                  <td>${dataj[i].twoSD}</td>
+                                  <td>${dataj[i].avgHighLowRange}</td>
+                                  <td>${dataj[i].highLowStandardDeviation}</td>
+                                  <td>${dataj[i].twoSDHighLow}</td>
+                              </tr>`;
+                    table.innerHTML += row;
+               }
+          }
+     </script>
+     <script>
+          // JavaScript to dynamically change days based on the selected month
+          const monthSelect = document.getElementById("month");
+          const dateSelect = document.getElementById("date");
+
+          monthSelect.addEventListener("change", function () {
+               const selectedMonth = monthSelect.value;
+               const daysInMonth = new Date(2023, selectedMonth, 0).getDate(); // Get the number of days in the selected month
+
+               // Clear the existing options
+               dateSelect.innerHTML = "";
+
+               // Add new day options
+               for (let i = 1; i <= daysInMonth; i++) {
+                    const day = i.toString().padStart(2, "0"); // Format day as "01", "02", etc.
+                    const option = document.createElement("option");
+                    option.value = day;
+                    option.textContent = day;
+                    dateSelect.appendChild(option);
+               }
+          });
+
+          // Initialize the days based on the initially selected month
+          const initialMonth = monthSelect.value;
+          const initialDaysInMonth = new Date(2023, initialMonth, 0).getDate();
+          for (let i = 1; i <= initialDaysInMonth; i++) {
+               const day = i.toString().padStart(2, "0");
+               const option = document.createElement("option");
+               option.value = day;
+               option.textContent = day;
+               dateSelect.appendChild(option);
+          }
+     </script>
+</body>
